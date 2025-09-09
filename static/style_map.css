@@ -3,7 +3,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+    background: linear-gradient(135deg, #202020, #4e4e4e);
     color: #fff;
 }
 
@@ -12,8 +12,18 @@ header {
     background-color: #000;
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
     padding: 10px 20px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+h2 {
+    margin: 20px auto 0 auto; /* Abstand oben, zentriert als Block */
+    width: 90%;               /* gleiche Breite wie #mapContainer */
+    max-width: 800px;         /* gleiche Max-Breite wie #mapContainer */
+    text-align: left;         /* Text linksbündig innerhalb des Containers */
+    font-size: 20px;
 }
 
 header img {
@@ -26,27 +36,29 @@ header h1 {
     margin: 0;
     font-size: 24px;
     font-weight: bold;
+    text-align: center;
 }
 
-/* Map Container - unverändert */
+/* Map Container */
 #mapContainer {
     position: relative;
-    width: 800px;
-    height: 600px;
-    margin: 30px auto;
+    width: 90%;
+    max-width: 800px;
+    margin: 30px auto; /* zentriert horizontal */
     background-color: #fff;
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     overflow: hidden;
+    /* display: inline-block; */ /* entfernen */
 }
 
 #mapContainer img {
     width: 100%;
-    height: 100%;
+    height: auto; /* Original-Verhältnis bleibt */
     display: block;
 }
 
-/* Player Marker - unverändert */
+/* Player Marker */
 .playerMarker {
     position: absolute;
     width: 20px;
@@ -58,15 +70,17 @@ header h1 {
     font-size: 12px;
     font-weight: bold;
     box-shadow: 0 0 5px rgba(0,0,0,0.7);
+    transition: all 0.2s ease;
 }
 
-/* Action Container - jetzt transparent zum Hintergrund */
+/* Action Container */
 #actionContainer {
-    width: 800px;
+    width: 90%;
+    max-width: 800px;
     margin: 20px auto;
     padding: 15px;
-    background-color: transparent; /* kein weißer Hintergrund mehr */
-    color: #fff; /* weiße Schrift */
+    background-color: transparent;
+    color: #fff;
     font-weight: bold;
 }
 
@@ -76,8 +90,8 @@ header h1 {
     margin-left: 5px;
     border: none;
     border-radius: 8px;
-    background-color: #fff; /* weiße Buttons */
-    color: #000; /* schwarze Schrift */
+    background-color: #fff;
+    color: #000;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
@@ -90,9 +104,36 @@ header h1 {
 
 /* Action Result */
 #actionResult {
-    width: 800px;
+    width: 90%;
+    max-width: 800px;
     margin: 20px auto;
     padding: 10px;
     font-weight: bold;
     color: #fff;
+}
+
+/* Mobile Optimierungen */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 20px;
+    }
+
+    header img {
+        height: 30px;
+        width: 30px;
+        margin-right: 10px;
+    }
+
+    #actionContainer button {
+        padding: 5px 10px;
+        margin-left: 3px;
+        font-size: 14px;
+    }
+
+    .playerMarker {
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        font-size: 10px;
+    }
 }

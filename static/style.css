@@ -1,7 +1,7 @@
 /* General page */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #121212;
+    background: linear-gradient(135deg, #202020, #4e4e4e);
     color: #fff;
     margin: 0;
     padding: 0;
@@ -11,15 +11,18 @@ body {
 header {
     display: flex;
     align-items: center;
+    justify-content: center; /* zentriert auf kleinen Bildschirmen */
     background-color: #000;
-    padding: 15px 30px;
+    padding: 15px 20px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+    flex-wrap: wrap; /* wenn Bildschirm zu klein, Zeilenumbruch */
 }
 
 header h1 {
-    margin: 0 0 0 15px;
-    font-size: 28px;
+    margin: 10px 0 0 10px;
+    font-size: 24px;
     letter-spacing: 1px;
+    text-align: center;
 }
 
 .header-icon {
@@ -32,20 +35,21 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px 20px;
+    padding: 20px 10px;
 }
 
 /* Form styling */
 .join-form {
     background-color: #fff;
     color: #000;
-    padding: 30px 40px;
+    padding: 25px 20px;
     border-radius: 15px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.7);
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    width: 350px;
+    gap: 12px;
+    width: 90%;      /* mobile-friendly */
+    max-width: 400px; /* auf großen Bildschirmen nicht zu breit */
 }
 
 .join-form label {
@@ -59,6 +63,8 @@ main {
     border-radius: 8px;
     border: 1px solid #888;
     font-size: 16px;
+    width: 100%; /* passt sich der Containerbreite an */
+    box-sizing: border-box;
 }
 
 .join-form input:focus,
@@ -83,4 +89,21 @@ main {
 
 .join-btn:hover {
     background-color: #333; /* etwas helleres Schwarz beim Hover */
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 20px;
+    }
+
+    .join-form {
+        padding: 20px 15px;
+        gap: 10px;
+    }
+
+    .join-btn {
+        font-size: 16px;
+        padding: 10px;
+    }
 }
