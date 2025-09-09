@@ -17,8 +17,8 @@ function updateMap() {
                 marker.classList.add("playerMarker");
 
                 // Determine role color
-                const role = p.includes("Korrupt") ? "Korrupt" : (p.includes("Dieb") ? "Dieb" : "Polizist");
-                marker.style.backgroundColor = role === "Polizist" ? "#000000" : role === "Korrupt" ? "#000000" : "#333333";
+                const role = p.includes("Korrupt") ? "korrupt" : (p.includes("Dieb") ? "dieb" : "polizist");
+                marker.classList.add("playerMarker", role);
                 marker.innerText = p[0];
 
                 // Convert percentage coordinates to pixels relative to container

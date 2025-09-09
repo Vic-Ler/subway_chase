@@ -48,6 +48,7 @@ header h1 {
 
 /* Player Marker - unverändert */
 .playerMarker {
+    position: absolute;
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -55,9 +56,21 @@ header h1 {
     line-height: 20px;
     color: white;
     font-size: 12px;
-    position: absolute;
     font-weight: bold;
     box-shadow: 0 0 5px rgba(0,0,0,0.7);
+}
+
+/* Farben pro Rolle */
+.playerMarker.polizist {
+    background-color: black;
+}
+
+.playerMarker.korrupt {
+    background-color: black;
+}
+
+.playerMarker.dieb {
+    background-color: gray;
 }
 
 /* Action Container - jetzt transparent zum Hintergrund */
