@@ -1,7 +1,7 @@
 /* General page */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #202020, #4e4e4e);
+    background-color: #202020;
     color: #fff;
     margin: 0;
     padding: 0;
@@ -15,7 +15,7 @@ header {
     background-color: #000;
     padding: 15px 20px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.5);
-    flex-wrap: wrap; /* wenn Bildschirm zu klein, Zeilenumbruch */
+    flex-wrap: wrap; /* Zeilenumbruch bei kleinen Bildschirmen */
 }
 
 header h1 {
@@ -48,8 +48,9 @@ main {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    width: 90%;      /* mobile-friendly */
+    width: 90%;       /* passt sich mobilen Geräten an */
     max-width: 400px; /* auf großen Bildschirmen nicht zu breit */
+    box-sizing: border-box;
 }
 
 .join-form label {
@@ -63,7 +64,7 @@ main {
     border-radius: 8px;
     border: 1px solid #888;
     font-size: 16px;
-    width: 100%; /* passt sich der Containerbreite an */
+    width: 100%;       /* passt sich Containerbreite an */
     box-sizing: border-box;
 }
 
@@ -88,7 +89,7 @@ main {
 }
 
 .join-btn:hover {
-    background-color: #333; /* etwas helleres Schwarz beim Hover */
+    background-color: #333; /* leicht helleres Schwarz beim Hover */
 }
 
 /* Mobile-specific adjustments */
@@ -97,9 +98,21 @@ main {
         font-size: 20px;
     }
 
+    .header-icon {
+        width: 35px;
+        height: 35px;
+    }
+
     .join-form {
         padding: 20px 15px;
         gap: 10px;
+    }
+
+    .join-form input[type="text"],
+    .join-form select,
+    .join-form input[list] {
+        font-size: 15px;
+        padding: 8px;
     }
 
     .join-btn {

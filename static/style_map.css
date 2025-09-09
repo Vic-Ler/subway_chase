@@ -14,16 +14,8 @@ header {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    padding: 10px 20px;
+    padding: 15px 20px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-}
-
-h2 {
-    margin: 20px auto 0 auto; /* Abstand oben, zentriert als Block */
-    width: 90%;               /* gleiche Breite wie #mapContainer */
-    max-width: 800px;         /* gleiche Max-Breite wie #mapContainer */
-    text-align: left;         /* Text linksbündig innerhalb des Containers */
-    font-size: 20px;
 }
 
 header img {
@@ -39,6 +31,15 @@ header h1 {
     text-align: center;
 }
 
+/* Spielername */
+h2 {
+    margin: 20px auto 0 auto;
+    width: 90%;
+    max-width: 800px;
+    text-align: left;
+    font-size: 20px;
+}
+
 /* Map Container */
 #mapContainer {
     position: relative;
@@ -49,7 +50,6 @@ header h1 {
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     overflow: hidden;
-    /* display: inline-block; */ /* entfernen */
 }
 
 #mapContainer img {
@@ -115,19 +115,23 @@ header h1 {
 /* Mobile Optimierungen */
 @media (max-width: 600px) {
     header h1 {
-        font-size: 20px;
+        font-size: 22px;
     }
 
     header img {
-        height: 30px;
-        width: 30px;
+        height: 35px;
+        width: 35px;
         margin-right: 10px;
     }
 
-    #actionContainer button {
-        padding: 5px 10px;
-        margin-left: 3px;
-        font-size: 14px;
+    h2 {
+        font-size: 18px;
+        width: 95%;
+    }
+
+    #mapContainer {
+        width: 95%;
+        margin: 20px auto;
     }
 
     .playerMarker {
@@ -135,5 +139,23 @@ header h1 {
         height: 16px;
         line-height: 16px;
         font-size: 10px;
+    }
+
+    #actionContainer {
+        width: 95%;
+        margin: 15px auto;
+        padding: 10px;
+    }
+
+    #actionContainer button {
+        padding: 8px 12px;
+        font-size: 14px;
+        margin-left: 3px;
+    }
+
+    #actionResult {
+        width: 95%;
+        font-size: 14px;
+        padding: 8px;
     }
 }
