@@ -60,19 +60,6 @@ header h1 {
     box-shadow: 0 0 5px rgba(0,0,0,0.7);
 }
 
-/* Farben pro Rolle */
-.playerMarker.polizist {
-    background-color: black;
-}
-
-.playerMarker.korrupt {
-    background-color: black;
-}
-
-.playerMarker.dieb {
-    background-color: gray;
-}
-
 /* Action Container - jetzt transparent zum Hintergrund */
 #actionContainer {
     width: 800px;

@@ -7,7 +7,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 # ====== Game state ======
-players = {}        # key: player name, value: dict with role and position
+players = {}        # key: player name, value: dict with role, position, color
 history = []        # list of {player: name, position: pos}
 player_sids = {}    # key: player name, value: their current SocketIO sid
 
@@ -18,7 +18,14 @@ def index():
         name = request.form["name"]
         role = request.form["role"]
         start_location = request.form["start_pos"]
-        players[name] = {"role": role, "position": start_location}
+
+        # Farbe nur für Polizist/Korrupt, Dieb = grau
+        color = request.form.get("color")
+        if role not in ["Polizist", "Korrupt"]:
+            color = "gray"
+
+        # Spieler speichern
+        players[name] = {"role": role, "position": start_location, "color": color}
         history.append({"player": name, "position": start_location})
         return render_template("map.html", player=name, role=role)
     return render_template("index.html")
@@ -56,7 +63,7 @@ def on_investigate(data):
 
     # only police/corrupt can investigate
     if players[player]["role"] == "Dieb":
-        emit('investigate_result', {'field': field, 'message': "Nur Polizei kann untersuchen!"}, room=request.sid)
+        emit('investigate_result', {'field': field, 'message': "Nur die Polizei kann untersuchen!"}, room=request.sid)
         return
 
     # auto-move
@@ -69,7 +76,7 @@ def on_investigate(data):
         h['position'] == field and players[h['player']]['role'] == "Dieb"
         for h in history
     )
-    msg = "Dieb war bereits hier" if was_thief_here else "Kein Dieb bisher hier"
+    msg = "Ein Dieb war bereits hier! (Du hast die Wahl, wen du darüber informieren möchtest)" if was_thief_here else "Kein Dieb war bislang hier"
     emit('investigate_result', {'field': field, 'message': msg}, room=request.sid)
 
 @socketio.on('arrest')
@@ -79,7 +86,7 @@ def on_arrest(data):
 
     # only police/corrupt can arrest
     if players[player]["role"] == "Dieb":
-        emit('arrest_result', {'field': field, 'message': "Nur Polizei kann festnehmen!"}, room=request.sid)
+        emit('arrest_result', {'field': field, 'message': "Nur die Polizei kann festnehmen!"}, room=request.sid)
         return
 
     # auto-move
@@ -88,7 +95,7 @@ def on_arrest(data):
     broadcast_state()
 
     thiefs_here = [p for p, info in players.items() if info['role'] == "Dieb" and info['position'] == field]
-    message = f"Festnahme erfolgreich! Diebe: {', '.join(thiefs_here)}" if thiefs_here else "Kein Dieb hier"
+    message = f"Festnahme erfolgreich! Polizisten (die nicht korrupt sind) müssen obligatorisch jeden informieren. Dieb: {', '.join(thiefs_here)}" if thiefs_here else "Hier ist kein Dieb."
     emit('arrest_result', {'field': field, 'message': message}, room=request.sid)
 
 @socketio.on('get_players')
@@ -125,7 +132,7 @@ def broadcast_state():
         )
 
 def visible_positions(viewer_name):
-    """Return a dict of player positions that this viewer is allowed to see."""
+    """Return a dict of player positions and colors that this viewer is allowed to see."""
     visible = {}
     viewer_role = players[viewer_name]["role"]
 
@@ -136,8 +143,8 @@ def visible_positions(viewer_name):
             # Normal police cannot see thieves
             continue
 
-        # Otherwise (corrupt police or thief, or police seeing non-thieves)
-        visible[p] = info["position"]
+        # include position AND color
+        visible[p] = {"position": info["position"], "color": info["color"]}
 
     return visible
 

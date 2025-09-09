@@ -158,9 +158,9 @@
         // Render role-specific actions
         if (playerRole === "Dieb") {
             actionContainer.innerHTML = `
-                Move to location:
+                Bewegen zum Standort:
                 <input list="locationList" id="move_field">
-                <button id="moveBtn">Move</button>
+                <button id="moveBtn">Bewegen</button>
             `;
             document.getElementById("moveBtn").onclick = function() {
                 const field = document.getElementById("move_field").value;
@@ -180,14 +180,14 @@
             `;
             document.getElementById("investigateBtn").onclick = function() {
                 const field = document.getElementById("investigate_field").value;
-                if (!locations[field]) return alert("Invalid location!");
+                if (!locations[field]) return alert("Ungültiger Ort!");
                 socket.emit('move', {name: playerName, new_pos: field}); // auto-move
                 socket.emit('investigate', {name: playerName, field: field});
                 document.getElementById("investigate_field").value = '';
             };
             document.getElementById("arrestBtn").onclick = function() {
                 const field = document.getElementById("arrest_field").value;
-                if (!locations[field]) return alert("Invalid location!");
+                if (!locations[field]) return alert("Ungültiger Ort!");
                 socket.emit('move', {name: playerName, new_pos: field}); // auto-move
                 socket.emit('arrest', {name: playerName, field: field});
                 document.getElementById("arrest_field").value = '';
@@ -200,19 +200,18 @@
             document.querySelectorAll(".playerMarker").forEach(m => m.remove());
 
             for (let p in playersData) {
-                const locName = playersData[p];
-                if (!locations[locName]) continue;
+                const info = playersData[p]; // info = { position: ..., color: ... }
+                const locName = info.position;
+                if (!locations[locName]) continue
 
                 const marker = document.createElement("div");
                 marker.classList.add("playerMarker");
+                marker.innerText = p[0]; // erster Buchstabe des Namens
 
-                const role = p.includes("Korrupt") ? "korrupt" : (p.includes("Dieb") ? "dieb" : "polizist");
-                marker.classList.add("playerMarker", role);
-                marker.innerText = p[0];
+                marker.style.backgroundColor = info.color;
 
                 marker.style.left = `calc(${locations[locName].x}% - 10px)`;
                 marker.style.top = `calc(${locations[locName].y}% - 10px)`;
-
                 mapContainer.appendChild(marker);
             }
         }

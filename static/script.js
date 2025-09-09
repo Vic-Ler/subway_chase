@@ -15,11 +15,11 @@ function updateMap() {
 
                 const marker = document.createElement("div");
                 marker.classList.add("playerMarker");
-
-                // Determine role color
-                const role = p.includes("Korrupt") ? "korrupt" : (p.includes("Dieb") ? "dieb" : "polizist");
-                marker.classList.add("playerMarker", role);
                 marker.innerText = p[0];
+
+                // Set color based on server-provided color
+                const color = data.colors[p] || "gray"; // fallback
+                marker.style.backgroundColor = color;
 
                 // Convert percentage coordinates to pixels relative to container
                 marker.style.position = "absolute";

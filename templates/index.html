@@ -23,6 +23,15 @@
                 <option value="Dieb">Dieb</option>
             </select>
 
+            <div id="colorContainer" style="display:none;">
+            <label for="role">Farbe:</label>
+            <select name="color" id="colorSelect">
+                <option value="red">Rot</option>
+                <option value="green">Grün</option>
+                <option value="blue">Blau</option>
+            </select>
+            </div>
+
             <label for="start_pos">Deine Startposition:</label>
             <input list="locationList" id="start_pos" name="start_pos" required>
             <datalist id="locationList">
@@ -147,6 +156,23 @@
         </datalist>
             <input type="submit" value="Los Gehts!" class="join-btn">
         </form>
+        <script>
+            const roleSelect = document.getElementById("role");
+            const colorContainer = document.getElementById("colorContainer");
+
+            roleSelect.addEventListener("change", () => {
+                if (roleSelect.value === "Polizist" || roleSelect.value === "Korrupt") {
+                    colorContainer.style.display = "block";
+                } else {
+                    colorContainer.style.display = "none";
+                }
+            });
+
+            // Initial prüfen
+            if (roleSelect.value === "Polizist" || roleSelect.value === "Korrupt") {
+                colorContainer.style.display = "block";
+            }
+        </script>
     </main>
 </body>
 </html>
