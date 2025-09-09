@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel - Crooked Cops</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+
+    <h2>Current Players</h2>
+    <ul id="playerList"></ul>
+
+    <button id="resetBtn">Reset Game</button>
+
+    <script>
+        const socket = io();
+
+        function refreshPlayers(){
+            socket.emit('get_players');
+        }
+
+        socket.on('player_list', function(data){
+            const list = document.getElementById("playerList");
+            list.innerHTML = "";
+            for (let name in data.players){
+                const role = data.players[name].role;
+                const li = document.createElement("li");
+                li.innerHTML = `${name} (${role}) <button onclick="removePlayer('${name}')">Remove</button>`;
+                list.appendChild(li);
+            }
+        });
+
+        function removePlayer(name){
+            socket.emit('remove_player', {name: name});
+            setTimeout(refreshPlayers, 200);
+        }
+
+        document.getElementById("resetBtn").onclick = function(){
+            socket.emit('reset_game');
+            setTimeout(refreshPlayers, 200);
+        }
+
+        // refresh player list on load
+        refreshPlayers();
+    </script>
+</body>
+</html>

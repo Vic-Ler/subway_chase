@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crooked Cops - Map</title>
+    <style>
+        #mapContainer {
+            position: relative;
+            width: 800px;
+            height: 600px;
+        }
+        #mapContainer img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .playerMarker {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            font-size: 12px;
+            position: absolute;
+        }
+        #actionContainer {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Player: {{ player }}</h1>
+
+    <div id="mapContainer">
+        <img id="mapImage" src="/static/subway_map.png">
+    </div>
+
+    <div id="actionContainer">
+        <!-- Action fields will be populated by JS based on role -->
+    </div>
+
+    <datalist id="locationList"></datalist>
+    <div id="actionResult" style="margin-top:20px;font-weight:bold;"></div>
+
+    <script>
+        const playerName = "{{ player }}";
+        const playerRole = "{{ role }}"; // pass role from Flask render_template
+        const socket = io();
+        const mapContainer = document.getElementById("mapContainer");
+        const actionContainer = document.getElementById("actionContainer");
+
+        const locations = {
+            "Hütteldorf": { "x": 5.20, "y": 63.55 },
+            "Zehetnergasse": { "x": 2.70, "y": 42.00 },
+            "Hochsatzengasse": { "x": 9.90, "y": 70.50 },
+            "Gruschaplatz": { "x": 2.65, "y": 70.50 },
+            "Penzing": { "x": 5.20, "y": 51.00 },
+            "Ober St.Veit": { "x": 9.80, "y": 63.55 },
+            "Braunschweiggasse": { "x": 14.70, "y": 63.55 },
+            "Hietzing": { "x": 19.40, "y": 63.55 },
+            "Schönbrunn": { "x": 23.80, "y": 63.55 },
+            "Meidling Hauptstraße": { "x": 27.90, "y": 63.55 },
+            "Längenfeldgasse": { "x": 31.90, "y": 63.55 },
+            "Margaretengürtel": { "x": 36.30, "y": 63.55 },
+            "Pilgramgasse": { "x": 39.80, "y": 63.55 },
+            "Kettenbrückengasse": { "x": 46.50, "y": 63.55 },
+            "Karlsplatz": { "x": 52.20, "y": 63.55 },
+            "Stadtpark": { "x": 59.40, "y": 58.90 },
+            "Breitensee": { "x": 13.60, "y": 51.00},
+            "Landstraße": { "x": 60.60, "y": 51.00 },
+            "Schwedenplatz": { "x": 56.10, "y": 41.00 },
+            "Speising": { "x": 15.40, "y": 73.50 },
+            "Karl-Schwed-Gasse": { "x": 15.40, "y": 80.50 },
+            "Leopoldigasse": { "x": 15.40, "y": 88.10 },
+            "Alterlaa": { "x": 31.90, "y": 88.60 },
+            "Erlaaer Straße": { "x": 31.90, "y": 93.40 },
+            "Am Schöpfwerk": { "x": 31.90, "y": 83.60 },
+            "Tscherttegasse": { "x": 31.90, "y": 79.00 },
+            "Bahnhof Meidling": { "x": 31.90, "y": 73.80 },
+            "Niederhofstrasse": { "x": 31.90, "y": 68.80 },
+            "Am Europaplatz": { "x": 29.70, "y": 85.30 },
+            "Clemens-Holzmeister-Straße": { "x": 29.70, "y": 97.40 },
+            "Gußriegelstraße": { "x": 41.20, "y": 97.40 },
+            "Laxenburger Str.": { "x": 52.40, "y": 97.40 },
+            "Altes Landgut": { "x": 52.40, "y": 93.70 },
+            "Troststraße": { "x": 52.40, "y": 88.60 },
+            "Reumannplatz": { "x": 52.40, "y": 83.60 },
+            "Keplerplatz": { "x": 52.40, "y": 78.70 },
+            "Südtiroler Platz - Hauptbahnhof": { "x": 52.40, "y": 73.80 },
+            "Taubstummengasse": { "x": 52.40, "y": 68.20 },
+            "Matzleinsdorfer Platz": { "x": 44.20, "y": 73.60 },
+            "Knöllgasse": { "x": 44.20, "y": 83.60 },
+            "Schrankenberggasse": { "x": 63.00, "y": 83.60 },
+            "Geiselbergstraße": { "x": 72.80, "y": 83.60 },
+            "Enkplatz": { "x": 84.60, "y": 83.60 },
+            "Simmering": { "x": 84.60, "y": 77.00 },
+            "Haidestraße": { "x": 84.60, "y": 60.50 },
+            "Gumpendorfer Straße": { "x": 31.90, "y": 54.50 },
+            "Quartier Belvedere": { "x": 65.80, "y": 71.80 },
+            "Rennweg": { "x": 66.00, "y": 63.80 },
+            "Praterkai": { "x": 84.60, "y": 48.80 },
+            "Lobau": { "x": 84.60, "y": 36.80 },
+            "Stadlau": { "x": 78.60, "y": 36.80 },
+            "Stadlauer Brücke": { "x": 80.00, "y": 48.80 },
+            "Praterbrücke": { "x": 75.00, "y": 48.80 },
+            "Donaumarina": { "x": 75.00, "y": 44.00 },
+            "Donaustadtbrücke": { "x": 77.00, "y": 39.80 },
+            "Hardeggasse": { "x": 80.00, "y": 33.00 },
+            "Donauspital": { "x": 84.60, "y": 33.00 },
+            "Seestadt": { "x": 89.00, "y": 33.00 },
+            "Josef-Baumann-Gasse": { "x": 89.00, "y": 20.00 },
+            "Zehdengasse": { "x": 89.00, "y": 3.80 },
+            "Polgarstraße": { "x": 84.60, "y": 20.30 },
+            "Kagraner Brücke": { "x": 84.60, "y": 9.00 },
+            "Kagran": { "x": 76.40, "y": 9.00 },
+            "Leopoldau": { "x": 79.80, "y": 3.80 },
+            "Siemensstraße": { "x": 60.00, "y": 3.80 },
+            "Floridsdorf": { "x": 60.00, "y": 12.60 },
+            "Carminweg": { "x": 68.40, "y": 9.00 },
+            "Alte Donau": { "x": 73.20, "y": 13.70 },
+            "Kaisermühlen - VIC": { "x": 70.40, "y": 18.20 },
+            "Goethehof": { "x": 65.60, "y": 18.20 },
+            "Neue Donau": { "x": 56.00, "y": 18.20 },
+            "Donauinsel": { "x": 66.80, "y": 24.00 },
+            "Vorgartenstraße": { "x": 63.60, "y": 29.50 },
+            "Praterstern": { "x": 60.50, "y": 33.80 },
+            "Messe Prater": { "x": 65.30, "y": 33.80 },
+            "Krieau": { "x": 68.00, "y": 37.40 },
+            "Stadion": { "x": 70.60, "y": 40.90 },
+            "Nestroyplatz": { "x": 58.40, "y": 37.20 },
+            "Gasometer": { "x": 80.80, "y": 71.60 },
+            "Erdberg": { "x": 76.60, "y": 67.20 },
+            "Schlachthausgasse": { "x": 72.70, "y": 62.80 },
+            "Kardinal-Nagl-Platz": { "x": 68.70, "y": 58.60 },
+            "Rochusgasse": { "x": 64.50, "y": 54.20 },
+            "Traisengasse": { "x": 60.30, "y": 22.80 },
+            "Taborstraße": { "x": 55.80, "y": 33.80 },
+            "Handelskai": { "x": 52.70, "y": 22.80 },
+            "Schottenring": { "x": 50.30, "y": 33.80 },
+            "Dresdner Straße": { "x": 48.60, "y": 22.80 },
+            "Jägerstraße": { "x": 45.00, "y": 22.80 },
+            "Spittelau": { "x": 41.70, "y": 22.80 },
+            "Friedensbrücke": { "x": 44.40, "y": 26.50 },
+            "Roßauer Lände": { "x": 47.00, "y": 29.80 },
+            "Heiligenstadt": { "x": 41.90, "y": 10.80 },
+            "Oberdöbling": { "x": 29.90, "y": 10.80 },
+            "Schottentor Universität": { "x": 47.00, "y": 39.00 },
+            "Rathaus": { "x": 44.30, "y": 44.20 },
+            "Stubentor": { "x": 56.40, "y": 50.00 },
+            "Stephansplatz": { "x": 52.30, "y": 50.00 },
+            "Herrengasse": { "x": 48.30, "y": 50.00 },
+            "Volkstheater": { "x": 44.00, "y": 50.00 },
+            "Museumsquartier": { "x": 44.00, "y": 56.70 },
+            "Neubaugasse": { "x": 40.00, "y": 50.00 },
+            "Zieglergasse": { "x": 36.00, "y": 50.00 },
+            "Westbahnhof": { "x": 31.90, "y": 50.00 },
+            "Burggasse": { "x": 31.90, "y": 44.00 },
+            "Thaliastraße": { "x": 31.90, "y": 39.40 },
+            "Josefstädter Straße": { "x": 31.90, "y": 34.40 },
+            "Währinger Straße": { "x": 31.90, "y": 29.50 },
+            "Nußdorfer Straße": { "x": 36.20, "y": 23.00 },
+            "Schweglerstraße": { "x": 28.30, "y": 47.00 },
+            "Johnstraße": { "x": 24.80, "y": 44.50 },
+            "Hütteldorfer Straße": { "x": 21.20, "y": 42.00 },
+            "Kendlerstraße": { "x": 17.80, "y": 39.00 },
+            "Ottakring": { "x": 13.60, "y": 36.00 },
+            "Hernals": { "x": 13.60, "y": 26.00 },
+            "Gersthof": { "x": 19.00, "y": 20.80 },
+            "Krottenbachstr.": { "x": 24.50, "y": 15.80 },
+            "Aumannplatz": { "x": 25.40, "y": 25.00 }
+        };
+
+        // Populate datalist
+        const locationList = document.getElementById("locationList");
+        for (const loc in locations) {
+            const option = document.createElement("option");
+            option.value = loc;
+            locationList.appendChild(option);
+        }
+
+        // Render role-specific actions
+        if (playerRole === "Dieb") {
+            actionContainer.innerHTML = `
+                Move to location:
+                <input list="locationList" id="move_field">
+                <button id="moveBtn">Move</button>
+            `;
+            document.getElementById("moveBtn").onclick = function() {
+                const field = document.getElementById("move_field").value;
+                if (!locations[field]) return alert("Invalid location!");
+                socket.emit('move', {name: playerName, new_pos: field});
+                document.getElementById("move_field").value = '';
+            };
+        } else {
+            actionContainer.innerHTML = `
+                Investigate location:
+                <input list="locationList" id="investigate_field">
+                <button id="investigateBtn">Investigate</button>
+                <br><br>
+                Arrest location:
+                <input list="locationList" id="arrest_field">
+                <button id="arrestBtn">Arrest</button>
+            `;
+            document.getElementById("investigateBtn").onclick = function() {
+                const field = document.getElementById("investigate_field").value;
+                if (!locations[field]) return alert("Invalid location!");
+                socket.emit('move', {name: playerName, new_pos: field}); // auto-move
+                socket.emit('investigate', {name: playerName, field: field});
+                document.getElementById("investigate_field").value = '';
+            };
+            document.getElementById("arrestBtn").onclick = function() {
+                const field = document.getElementById("arrest_field").value;
+                if (!locations[field]) return alert("Invalid location!");
+                socket.emit('move', {name: playerName, new_pos: field}); // auto-move
+                socket.emit('arrest', {name: playerName, field: field});
+                document.getElementById("arrest_field").value = '';
+            };
+        }
+
+        socket.emit('join', {name: playerName});
+
+        function drawPlayers(playersData) {
+            document.querySelectorAll(".playerMarker").forEach(m => m.remove());
+
+            for (let p in playersData) {
+                const locName = playersData[p];
+                if (!locations[locName]) continue;
+
+                const marker = document.createElement("div");
+                marker.classList.add("playerMarker");
+
+                const role = p.includes("Korrupt") ? "Korrupt" : (p.includes("Dieb") ? "Dieb" : "Polizist");
+                marker.style.backgroundColor = role === "Polizist" ? "lightblue" : role === "Korrupt" ? "orange" : "red";
+                marker.innerText = p[0];
+
+                marker.style.left = `calc(${locations[locName].x}% - 10px)`;
+                marker.style.top = `calc(${locations[locName].y}% - 10px)`;
+
+                mapContainer.appendChild(marker);
+            }
+        }
+
+        socket.on('state_update', function(data) {
+            drawPlayers(data.players);
+        });
+
+        socket.on('investigate_result', function(data) {
+            document.getElementById("actionResult").innerText = `Investigate ${data.field}: ${data.message}`;
+        });
+
+        socket.on('arrest_result', function(data) {
+            document.getElementById("actionResult").innerText = `Arrest ${data.field}: ${data.message}`;
+        });
+    </script>
+</body>
+</html>
