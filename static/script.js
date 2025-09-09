@@ -18,7 +18,7 @@ function updateMap() {
 
                 // Determine role color
                 const role = p.includes("Korrupt") ? "Korrupt" : (p.includes("Dieb") ? "Dieb" : "Polizist");
-                marker.style.backgroundColor = role === "Polizist" ? "lightblue" : role === "Korrupt" ? "orange" : "red";
+                marker.style.backgroundColor = role === "Polizist" ? "#000000" : role === "Korrupt" ? "#000000" : "#333333";
                 marker.innerText = p[0];
 
                 // Convert percentage coordinates to pixels relative to container

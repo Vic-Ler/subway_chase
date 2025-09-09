@@ -1,47 +1,23 @@
-<!DOCTYPE html>
-<html>
 <head>
-    <title>Crooked Cops - Map</title>
-    <style>
-        #mapContainer {
-            position: relative;
-            width: 800px;
-            height: 600px;
-        }
-        #mapContainer img {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-        .playerMarker {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 20px;
-            color: white;
-            font-size: 12px;
-            position: absolute;
-        }
-        #actionContainer {
-            margin-top: 20px;
-        }
-    </style>
+    <title>Subway Chase - Map</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_map.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
 </head>
 <body>
-    <h1>Player: {{ player }}</h1>
+    <header>
+        <img src="{{ url_for('static', filename='icon.png') }}" alt="Game Icon">
+        <h1>Subway Chase - Karte</h1>
+    </header>
+
+    <h2>Spieler: {{ player }}</h2>
 
     <div id="mapContainer">
-        <img id="mapImage" src="/static/subway_map.png">
+        <img id="mapImage" src="{{ url_for('static', filename='subway_map.png') }}">
     </div>
 
-    <div id="actionContainer">
-        <!-- Action fields will be populated by JS based on role -->
-    </div>
-
+    <div id="actionContainer"></div>
     <datalist id="locationList"></datalist>
-    <div id="actionResult" style="margin-top:20px;font-weight:bold;"></div>
+    <div id="actionResult"></div>
 
     <script>
         const playerName = "{{ player }}";
@@ -194,13 +170,13 @@
             };
         } else {
             actionContainer.innerHTML = `
-                Investigate location:
+                Untersuchung - Standort:
                 <input list="locationList" id="investigate_field">
-                <button id="investigateBtn">Investigate</button>
+                <button id="investigateBtn">Untersuchen</button>
                 <br><br>
-                Arrest location:
+                Festnahme - Standort:
                 <input list="locationList" id="arrest_field">
-                <button id="arrestBtn">Arrest</button>
+                <button id="arrestBtn">Festnehmen</button>
             `;
             document.getElementById("investigateBtn").onclick = function() {
                 const field = document.getElementById("investigate_field").value;

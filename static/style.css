@@ -1,0 +1,86 @@
+/* General page */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+header {
+    display: flex;
+    align-items: center;
+    background-color: #000;
+    padding: 15px 30px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+}
+
+header h1 {
+    margin: 0 0 0 15px;
+    font-size: 28px;
+    letter-spacing: 1px;
+}
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+}
+
+/* Main content */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* Form styling */
+.join-form {
+    background-color: #fff;
+    color: #000;
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 350px;
+}
+
+.join-form label {
+    font-weight: bold;
+}
+
+.join-form input[type="text"],
+.join-form select,
+.join-form input[list] {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #888;
+    font-size: 16px;
+}
+
+.join-form input:focus,
+.join-form select:focus,
+.join-form input[list]:focus {
+    outline: none;
+    border-color: #1e90ff;
+    box-shadow: 0 0 5px #1e90ff;
+}
+
+.join-btn {
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background-color: #000; /* Schwarz */
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.join-btn:hover {
+    background-color: #333; /* etwas helleres Schwarz beim Hover */
+}

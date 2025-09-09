@@ -1,21 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Crooked Cops - Join</title>
+    <title>Subway Chase - Join</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Join the Game</h1>
-    <form method="POST">
-        Name: <input type="text" name="name" required><br><br>
-        Role:
-        <select name="role" required>
-            <option value="Polizist">Polizist</option>
-            <option value="Korrupt">Korrupt</option>
-            <option value="Dieb">Dieb</option>
-        </select><br><br>
-        Start Location:
-        <input list="locationList" name="start_pos" required>
-        <datalist id="locationList">
+    <header>
+        <img src="{{ url_for('static', filename='icon.png') }}" alt="Game Icon" class="header-icon">
+        <h1>Subway Chase</h1>
+    </header>
+
+    <main>
+        <h2>Mache beim Spiel mit!</h2>
+        <form method="POST" class="join-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="role">Rolle:</label>
+            <select id="role" name="role" required>
+                <option value="Polizist">Polizist</option>
+                <option value="Korrupt">Korrupter Polizist</option>
+                <option value="Dieb">Dieb</option>
+            </select>
+
+            <label for="start_pos">Deine Startposition:</label>
+            <input list="locationList" id="start_pos" name="start_pos" required>
+            <datalist id="locationList">
             <option value="Hütteldorf">
             <option value="Zehetnergasse">
             <option value="Hochsatzengasse">
@@ -134,8 +144,9 @@
             <option value="Gersthof">
             <option value="Krottenbachstr.">
             <option value="Aumannplatz">
-        </datalist><br><br>
-        <input type="submit" value="Join">
-    </form>
+        </datalist>
+            <input type="submit" value="Los Gehts!" class="join-btn">
+        </form>
+    </main>
 </body>
 </html>
